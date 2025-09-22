@@ -1,4 +1,4 @@
-MicroGreen — DSL de Estufa/Aquecimento (alvo: MicrowaveVM)
+##MicroGreen — DSL de Estufa/Aquecimento (alvo: MicrowaveVM)
 
 Uma linguagem simples para operadores não-programadores controlarem uma estufa (ou aquecedor) usando frases diretas.
 O compilador cuida de ifs, laços e variáveis internas e gera o assembly .mwasm da MicrowaveVM.
@@ -12,7 +12,7 @@ alarme se temperatura maior 70
 mostrar temperatura
 parar
 
-Visão geral
+###Visão geral
 
 Foco no usuário: frases em português; uma instrução por linha; sem símbolos estranhos.
 
