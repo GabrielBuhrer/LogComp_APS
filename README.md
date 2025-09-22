@@ -12,7 +12,7 @@ alarme se temperatura maior 70
 mostrar temperatura
 parar
 
-###Visão geral
+Visão geral
 
 Foco no usuário: frases em português; uma instrução por linha; sem símbolos estranhos.
 
