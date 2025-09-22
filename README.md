@@ -25,6 +25,7 @@ Visão geral
            O operador escreve o quê quer; o compilador cuida do como.
 
 Referência de comandos
+
            Controle de potência e tempo
 
                       potencia N
@@ -66,6 +67,7 @@ Referência de comandos
                       Finaliza o programa.
 
 Gramática (EBNF)
+
            PROGRAMA    = { LINHA } ;
            LINHA       = [ COMANDO ], ( "\n" | ";" ) ;
            
