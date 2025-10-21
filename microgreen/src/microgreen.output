@@ -1,0 +1,403 @@
+Terminais sem uso na gramática
+
+    T_ERROR
+
+
+Gramática
+
+    0 $accept: programa $end
+
+    1 programa: linhas opt_ultima
+
+    2 linhas: ε
+    3       | linhas linha
+
+    4 linha: comando terminador
+
+    5 opt_ultima: ε
+    6           | comando
+
+    7 terminador: T_SEMI
+    8           | T_NL
+
+    9 comando: T_POTENCIA T_INT
+   10        | T_ESPERAR T_DUR
+   11        | T_AQUECER T_ATE T_INT
+   12        | T_MANTER T_ACIMA T_DE T_INT T_POR T_DUR
+   13        | T_ALARME T_SE T_TEMPERATURA rel T_INT
+   14        | T_MOSTRAR mostrar_what
+   15        | T_BIPE
+   16        | T_PARAR
+   17        | T_HALT
+   18        | error
+
+   19 rel: T_MAIOR
+   20    | T_MENOR
+   21    | T_IGUAL
+
+   22 mostrar_what: T_TEMPERATURA
+   23             | T_POTENCIA
+
+
+Terminais, com as regras onde eles aparecem
+
+    $end (0) 0
+    error (256) 18
+    T_POTENCIA (258) 9 23
+    T_ESPERAR (259) 10
+    T_AQUECER (260) 11
+    T_ATE (261) 11
+    T_MANTER (262) 12
+    T_ACIMA (263) 12
+    T_DE (264) 12
+    T_POR (265) 12
+    T_ALARME (266) 13
+    T_SE (267) 13
+    T_TEMPERATURA (268) 13 22
+    T_MAIOR (269) 19
+    T_MENOR (270) 20
+    T_IGUAL (271) 21
+    T_MOSTRAR (272) 14
+    T_BIPE (273) 15
+    T_PARAR (274) 16
+    T_HALT (275) 17
+    T_SEMI (276) 7
+    T_NL (277) 8
+    T_ERROR (278)
+    T_INT <ival> (279) 9 11 12 13
+    T_DUR <ival> (280) 10 12
+
+
+Não terminais com as regras onde eles aparecem
+
+    $accept (26)
+        à esquerda: 0
+    programa (27)
+        à esquerda: 1
+        à direita: 0
+    linhas (28)
+        à esquerda: 2 3
+        à direita: 1 3
+    linha (29)
+        à esquerda: 4
+        à direita: 3
+    opt_ultima (30)
+        à esquerda: 5 6
+        à direita: 1
+    terminador (31)
+        à esquerda: 7 8
+        à direita: 4
+    comando (32)
+        à esquerda: 9 10 11 12 13 14 15 16 17 18
+        à direita: 4 6
+    rel (33)
+        à esquerda: 19 20 21
+        à direita: 13
+    mostrar_what (34)
+        à esquerda: 22 23
+        à direita: 14
+
+
+Estado 0
+
+    0 $accept: • programa $end
+
+    $padrão  reduzir usando a regra 2 (linhas)
+
+    programa  ir ao estado 1
+    linhas    ir ao estado 2
+
+
+Estado 1
+
+    0 $accept: programa • $end
+
+    $end  deslocar, e ir ao estado 3
+
+
+Estado 2
+
+    1 programa: linhas • opt_ultima
+    3 linhas: linhas • linha
+
+    error       deslocar, e ir ao estado 4
+    T_POTENCIA  deslocar, e ir ao estado 5
+    T_ESPERAR   deslocar, e ir ao estado 6
+    T_AQUECER   deslocar, e ir ao estado 7
+    T_MANTER    deslocar, e ir ao estado 8
+    T_ALARME    deslocar, e ir ao estado 9
+    T_MOSTRAR   deslocar, e ir ao estado 10
+    T_BIPE      deslocar, e ir ao estado 11
+    T_PARAR     deslocar, e ir ao estado 12
+    T_HALT      deslocar, e ir ao estado 13
+
+    $end  reduzir usando a regra 5 (opt_ultima)
+
+    linha       ir ao estado 14
+    opt_ultima  ir ao estado 15
+    comando     ir ao estado 16
+
+
+Estado 3
+
+    0 $accept: programa $end •
+
+    $padrão  aceitar
+
+
+Estado 4
+
+   18 comando: error •
+
+    $padrão  reduzir usando a regra 18 (comando)
+
+
+Estado 5
+
+    9 comando: T_POTENCIA • T_INT
+
+    T_INT  deslocar, e ir ao estado 17
+
+
+Estado 6
+
+   10 comando: T_ESPERAR • T_DUR
+
+    T_DUR  deslocar, e ir ao estado 18
+
+
+Estado 7
+
+   11 comando: T_AQUECER • T_ATE T_INT
+
+    T_ATE  deslocar, e ir ao estado 19
+
+
+Estado 8
+
+   12 comando: T_MANTER • T_ACIMA T_DE T_INT T_POR T_DUR
+
+    T_ACIMA  deslocar, e ir ao estado 20
+
+
+Estado 9
+
+   13 comando: T_ALARME • T_SE T_TEMPERATURA rel T_INT
+
+    T_SE  deslocar, e ir ao estado 21
+
+
+Estado 10
+
+   14 comando: T_MOSTRAR • mostrar_what
+
+    T_POTENCIA     deslocar, e ir ao estado 22
+    T_TEMPERATURA  deslocar, e ir ao estado 23
+
+    mostrar_what  ir ao estado 24
+
+
+Estado 11
+
+   15 comando: T_BIPE •
+
+    $padrão  reduzir usando a regra 15 (comando)
+
+
+Estado 12
+
+   16 comando: T_PARAR •
+
+    $padrão  reduzir usando a regra 16 (comando)
+
+
+Estado 13
+
+   17 comando: T_HALT •
+
+    $padrão  reduzir usando a regra 17 (comando)
+
+
+Estado 14
+
+    3 linhas: linhas linha •
+
+    $padrão  reduzir usando a regra 3 (linhas)
+
+
+Estado 15
+
+    1 programa: linhas opt_ultima •
+
+    $padrão  reduzir usando a regra 1 (programa)
+
+
+Estado 16
+
+    4 linha: comando • terminador
+    6 opt_ultima: comando •
+
+    T_SEMI  deslocar, e ir ao estado 25
+    T_NL    deslocar, e ir ao estado 26
+
+    $padrão  reduzir usando a regra 6 (opt_ultima)
+
+    terminador  ir ao estado 27
+
+
+Estado 17
+
+    9 comando: T_POTENCIA T_INT •
+
+    $padrão  reduzir usando a regra 9 (comando)
+
+
+Estado 18
+
+   10 comando: T_ESPERAR T_DUR •
+
+    $padrão  reduzir usando a regra 10 (comando)
+
+
+Estado 19
+
+   11 comando: T_AQUECER T_ATE • T_INT
+
+    T_INT  deslocar, e ir ao estado 28
+
+
+Estado 20
+
+   12 comando: T_MANTER T_ACIMA • T_DE T_INT T_POR T_DUR
+
+    T_DE  deslocar, e ir ao estado 29
+
+
+Estado 21
+
+   13 comando: T_ALARME T_SE • T_TEMPERATURA rel T_INT
+
+    T_TEMPERATURA  deslocar, e ir ao estado 30
+
+
+Estado 22
+
+   23 mostrar_what: T_POTENCIA •
+
+    $padrão  reduzir usando a regra 23 (mostrar_what)
+
+
+Estado 23
+
+   22 mostrar_what: T_TEMPERATURA •
+
+    $padrão  reduzir usando a regra 22 (mostrar_what)
+
+
+Estado 24
+
+   14 comando: T_MOSTRAR mostrar_what •
+
+    $padrão  reduzir usando a regra 14 (comando)
+
+
+Estado 25
+
+    7 terminador: T_SEMI •
+
+    $padrão  reduzir usando a regra 7 (terminador)
+
+
+Estado 26
+
+    8 terminador: T_NL •
+
+    $padrão  reduzir usando a regra 8 (terminador)
+
+
+Estado 27
+
+    4 linha: comando terminador •
+
+    $padrão  reduzir usando a regra 4 (linha)
+
+
+Estado 28
+
+   11 comando: T_AQUECER T_ATE T_INT •
+
+    $padrão  reduzir usando a regra 11 (comando)
+
+
+Estado 29
+
+   12 comando: T_MANTER T_ACIMA T_DE • T_INT T_POR T_DUR
+
+    T_INT  deslocar, e ir ao estado 31
+
+
+Estado 30
+
+   13 comando: T_ALARME T_SE T_TEMPERATURA • rel T_INT
+
+    T_MAIOR  deslocar, e ir ao estado 32
+    T_MENOR  deslocar, e ir ao estado 33
+    T_IGUAL  deslocar, e ir ao estado 34
+
+    rel  ir ao estado 35
+
+
+Estado 31
+
+   12 comando: T_MANTER T_ACIMA T_DE T_INT • T_POR T_DUR
+
+    T_POR  deslocar, e ir ao estado 36
+
+
+Estado 32
+
+   19 rel: T_MAIOR •
+
+    $padrão  reduzir usando a regra 19 (rel)
+
+
+Estado 33
+
+   20 rel: T_MENOR •
+
+    $padrão  reduzir usando a regra 20 (rel)
+
+
+Estado 34
+
+   21 rel: T_IGUAL •
+
+    $padrão  reduzir usando a regra 21 (rel)
+
+
+Estado 35
+
+   13 comando: T_ALARME T_SE T_TEMPERATURA rel • T_INT
+
+    T_INT  deslocar, e ir ao estado 37
+
+
+Estado 36
+
+   12 comando: T_MANTER T_ACIMA T_DE T_INT T_POR • T_DUR
+
+    T_DUR  deslocar, e ir ao estado 38
+
+
+Estado 37
+
+   13 comando: T_ALARME T_SE T_TEMPERATURA rel T_INT •
+
+    $padrão  reduzir usando a regra 13 (comando)
+
+
+Estado 38
+
+   12 comando: T_MANTER T_ACIMA T_DE T_INT T_POR T_DUR •
+
+    $padrão  reduzir usando a regra 12 (comando)

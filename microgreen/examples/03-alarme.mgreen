@@ -1,0 +1,5 @@
+potencia 40
+alarme se temperatura maior 70
+mostrar temperatura
+esperar 10s
+parar
