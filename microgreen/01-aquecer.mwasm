@@ -1,0 +1,10 @@
+; potencia 80
+SET POWER 80
+; aquecer ate 60 (modelo simplificado)
+SET TIME 60
+L_aquecer_0:
+DECJZ TIME L_aquecer_fim_0
+GOTO L_aquecer_0
+L_aquecer_fim_0:
+; parar
+HALT

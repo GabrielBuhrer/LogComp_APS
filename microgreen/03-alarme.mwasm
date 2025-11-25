@@ -1,0 +1,16 @@
+; potencia 40
+SET POWER 40
+; alarme se temperatura ... 70 (modelo simplificado; sempre dispara)
+PUSH TIME
+PRINT
+POP TIME
+; mostrar temperatura (aprox: imprime TIME)
+PRINT
+; esperar 10 segundos
+SET TIME 10
+L_wait_0:
+DECJZ TIME L_end_0
+GOTO L_wait_0
+L_end_0:
+; parar
+HALT

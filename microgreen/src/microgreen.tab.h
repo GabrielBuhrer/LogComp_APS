@@ -85,10 +85,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 11 "src/microgreen.y"
- int ival; 
+#line 17 "src/microgreen.y"
 
-#line 92 "src/microgreen.tab.h"
+  int ival;
+
+#line 93 "src/microgreen.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,0 +1,10 @@
+; potencia 70
+SET POWER 70
+; manter acima de 55 por 20 segundos (modelo simplificado)
+SET TIME 20
+L_manter_0:
+DECJZ TIME L_manter_fim_0
+GOTO L_manter_0
+L_manter_fim_0:
+; parar
+HALT

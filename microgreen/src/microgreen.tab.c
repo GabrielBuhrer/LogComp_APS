@@ -71,11 +71,17 @@
 
   #include <stdio.h>
   #include <stdbool.h>
+
   int yylex(void);
   void yyerror(const char *s);
   extern int yylineno;
 
-#line 79 "src/microgreen.tab.c"
+  // arquivo de saída para o código .mwasm (definido em main.c)
+  extern FILE *mg_out;
+  // contador para gerar labels únicos: L_wait_0, L_aquecer_1, etc.
+  static int mg_next_label = 0;
+
+#line 85 "src/microgreen.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -136,8 +142,7 @@ enum yysymbol_kind_t
   YYSYMBOL_opt_ultima = 30,                /* opt_ultima  */
   YYSYMBOL_terminador = 31,                /* terminador  */
   YYSYMBOL_comando = 32,                   /* comando  */
-  YYSYMBOL_rel = 33,                       /* rel  */
-  YYSYMBOL_mostrar_what = 34               /* mostrar_what  */
+  YYSYMBOL_rel = 33                        /* rel  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -470,11 +475,11 @@ union yyalloc
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  26
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  9
+#define YYNNTS  8
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  24
+#define YYNRULES  23
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  39
+#define YYNSTATES  38
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   280
@@ -524,11 +529,11 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    23,    23,    27,    28,    32,    36,    37,    41,    42,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      59,    60,    61,    65,    66
+       0,    31,    31,    35,    36,    40,    44,    45,    49,    50,
+      54,    59,    69,    79,    89,    96,   102,   111,   118,   123,
+     128,   136,   137,   138
 };
 #endif
 
@@ -549,7 +554,7 @@ static const char *const yytname[] =
   "T_POR", "T_ALARME", "T_SE", "T_TEMPERATURA", "T_MAIOR", "T_MENOR",
   "T_IGUAL", "T_MOSTRAR", "T_BIPE", "T_PARAR", "T_HALT", "T_SEMI", "T_NL",
   "T_ERROR", "T_INT", "T_DUR", "$accept", "programa", "linhas", "linha",
-  "opt_ultima", "terminador", "comando", "rel", "mostrar_what", YY_NULLPTR
+  "opt_ultima", "terminador", "comando", "rel", YY_NULLPTR
 };
 
 static const char *
@@ -575,8 +580,8 @@ static const yytype_int8 yypact[] =
 {
      -10,     6,     0,   -10,   -10,    -9,    -4,    10,    14,    11,
       -1,   -10,   -10,   -10,   -10,   -10,    -8,   -10,   -10,     1,
-      15,    13,   -10,   -10,   -10,   -10,   -10,   -10,   -10,     3,
-      -6,    18,   -10,   -10,   -10,     5,     7,   -10,   -10
+      15,    13,   -10,   -10,   -10,   -10,   -10,   -10,     3,    -6,
+      18,   -10,   -10,   -10,     5,     7,   -10,   -10
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -584,22 +589,22 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       3,     0,     0,     1,    19,     0,     0,     0,     0,     0,
-       0,    16,    17,    18,     4,     2,     7,    10,    11,     0,
-       0,     0,    24,    23,    15,     8,     9,     5,    12,     0,
-       0,     0,    20,    21,    22,     0,     0,    14,    13
+       3,     0,     0,     1,    20,     0,     0,     0,     0,     0,
+       0,    17,    18,    19,     4,     2,     7,    10,    11,     0,
+       0,     0,    16,    15,     8,     9,     5,    12,     0,     0,
+       0,    21,    22,    23,     0,     0,    14,    13
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -10,   -10,   -10,   -10,   -10,   -10,   -10,   -10,   -10
+     -10,   -10,   -10,   -10,   -10,   -10,   -10,   -10
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     1,     2,    14,    15,    27,    16,    35,    24
+       0,     1,     2,    14,    15,    26,    16,    34
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -607,10 +612,10 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      -6,     4,    22,     5,     6,     7,     3,     8,    32,    33,
-      34,     9,    23,    25,    26,    17,    19,    10,    11,    12,
-      13,    18,    20,    21,    29,    28,    30,    31,    36,    37,
-       0,     0,    38
+      -6,     4,    22,     5,     6,     7,     3,     8,    31,    32,
+      33,     9,    23,    24,    25,    17,    19,    10,    11,    12,
+      13,    18,    20,    21,    28,    27,    29,    30,    35,    36,
+       0,     0,    37
 };
 
 static const yytype_int8 yycheck[] =
@@ -627,8 +632,8 @@ static const yytype_int8 yystos[] =
 {
        0,    27,    28,     0,     1,     3,     4,     5,     7,    11,
       17,    18,    19,    20,    29,    30,    32,    24,    25,     6,
-       8,    12,     3,    13,    34,    21,    22,    31,    24,     9,
-      13,    24,    14,    15,    16,    33,    10,    24,    25
+       8,    12,     3,    13,    21,    22,    31,    24,     9,    13,
+      24,    14,    15,    16,    33,    10,    24,    25
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -636,15 +641,15 @@ static const yytype_int8 yyr1[] =
 {
        0,    26,    27,    28,    28,    29,    30,    30,    31,    31,
       32,    32,    32,    32,    32,    32,    32,    32,    32,    32,
-      33,    33,    33,    34,    34
+      32,    33,    33,    33
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     0,     2,     2,     0,     1,     1,     1,
-       2,     2,     3,     6,     5,     2,     1,     1,     1,     1,
-       1,     1,     1,     1,     1
+       2,     2,     3,     6,     5,     2,     2,     1,     1,     1,
+       1,     1,     1,     1
 };
 
 
@@ -1377,14 +1382,131 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 19: /* comando: error  */
+  case 10: /* comando: T_POTENCIA T_INT  */
 #line 55 "src/microgreen.y"
-          { fprintf(stderr, "Erro de sintaxe na linha %d.\n", yylineno); yyerrok; }
-#line 1384 "src/microgreen.tab.c"
+      {
+        fprintf(mg_out, "; potencia %d\n", (yyvsp[0].ival));
+        fprintf(mg_out, "SET POWER %d\n", (yyvsp[0].ival));
+      }
+#line 1392 "src/microgreen.tab.c"
+    break;
+
+  case 11: /* comando: T_ESPERAR T_DUR  */
+#line 60 "src/microgreen.y"
+      {
+        int id = mg_next_label++;
+        fprintf(mg_out, "; esperar %d segundos\n", (yyvsp[0].ival));
+        fprintf(mg_out, "SET TIME %d\n", (yyvsp[0].ival));
+        fprintf(mg_out, "L_wait_%d:\n", id);
+        fprintf(mg_out, "DECJZ TIME L_end_%d\n", id);
+        fprintf(mg_out, "GOTO L_wait_%d\n", id);
+        fprintf(mg_out, "L_end_%d:\n", id);
+      }
+#line 1406 "src/microgreen.tab.c"
+    break;
+
+  case 12: /* comando: T_AQUECER T_ATE T_INT  */
+#line 70 "src/microgreen.y"
+      {
+        int id = mg_next_label++;
+        fprintf(mg_out, "; aquecer ate %d (modelo simplificado)\n", (yyvsp[0].ival));
+        fprintf(mg_out, "SET TIME %d\n", (yyvsp[0].ival));
+        fprintf(mg_out, "L_aquecer_%d:\n", id);
+        fprintf(mg_out, "DECJZ TIME L_aquecer_fim_%d\n", id);
+        fprintf(mg_out, "GOTO L_aquecer_%d\n", id);
+        fprintf(mg_out, "L_aquecer_fim_%d:\n", id);
+      }
+#line 1420 "src/microgreen.tab.c"
+    break;
+
+  case 13: /* comando: T_MANTER T_ACIMA T_DE T_INT T_POR T_DUR  */
+#line 80 "src/microgreen.y"
+      {
+        int id = mg_next_label++;
+        fprintf(mg_out, "; manter acima de %d por %d segundos (modelo simplificado)\n", (yyvsp[-2].ival), (yyvsp[0].ival));
+        fprintf(mg_out, "SET TIME %d\n", (yyvsp[0].ival));
+        fprintf(mg_out, "L_manter_%d:\n", id);
+        fprintf(mg_out, "DECJZ TIME L_manter_fim_%d\n", id);
+        fprintf(mg_out, "GOTO L_manter_%d\n", id);
+        fprintf(mg_out, "L_manter_fim_%d:\n", id);
+      }
+#line 1434 "src/microgreen.tab.c"
+    break;
+
+  case 14: /* comando: T_ALARME T_SE T_TEMPERATURA rel T_INT  */
+#line 90 "src/microgreen.y"
+      {
+        fprintf(mg_out, "; alarme se temperatura ... %d (modelo simplificado; sempre dispara)\n", (yyvsp[0].ival));
+        fprintf(mg_out, "PUSH TIME\n");
+        fprintf(mg_out, "PRINT\n");
+        fprintf(mg_out, "POP TIME\n");
+      }
+#line 1445 "src/microgreen.tab.c"
+    break;
+
+  case 15: /* comando: T_MOSTRAR T_TEMPERATURA  */
+#line 97 "src/microgreen.y"
+      {
+        // a VM não permite PUSH TEMP; usamos TIME como proxy
+        fprintf(mg_out, "; mostrar temperatura (aprox: imprime TIME)\n");
+        fprintf(mg_out, "PRINT\n");
+      }
+#line 1455 "src/microgreen.tab.c"
+    break;
+
+  case 16: /* comando: T_MOSTRAR T_POTENCIA  */
+#line 103 "src/microgreen.y"
+      {
+        fprintf(mg_out, "; mostrar potencia\n");
+        fprintf(mg_out, "PUSH TIME\n");
+        fprintf(mg_out, "PUSH POWER\n");
+        fprintf(mg_out, "POP TIME\n");
+        fprintf(mg_out, "PRINT\n");
+        fprintf(mg_out, "POP TIME\n");
+      }
+#line 1468 "src/microgreen.tab.c"
+    break;
+
+  case 17: /* comando: T_BIPE  */
+#line 112 "src/microgreen.y"
+      {
+        fprintf(mg_out, "; bipe\n");
+        fprintf(mg_out, "PUSH TIME\n");
+        fprintf(mg_out, "PRINT\n");
+        fprintf(mg_out, "POP TIME\n");
+      }
+#line 1479 "src/microgreen.tab.c"
+    break;
+
+  case 18: /* comando: T_PARAR  */
+#line 119 "src/microgreen.y"
+      {
+        fprintf(mg_out, "; parar\n");
+        fprintf(mg_out, "HALT\n");
+      }
+#line 1488 "src/microgreen.tab.c"
+    break;
+
+  case 19: /* comando: T_HALT  */
+#line 124 "src/microgreen.y"
+      {
+        fprintf(mg_out, "; halt\n");
+        fprintf(mg_out, "HALT\n");
+      }
+#line 1497 "src/microgreen.tab.c"
+    break;
+
+  case 20: /* comando: error  */
+#line 129 "src/microgreen.y"
+      {
+        fprintf(stderr, "Erro de sintaxe na linha %d.\n", yylineno);
+        yyerrok;
+      }
+#line 1506 "src/microgreen.tab.c"
     break;
 
 
-#line 1388 "src/microgreen.tab.c"
+#line 1510 "src/microgreen.tab.c"
 
       default: break;
     }
@@ -1608,7 +1730,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 68 "src/microgreen.y"
+#line 140 "src/microgreen.y"
 
 void yyerror(const char* s) {
   fprintf(stderr, "Erro: %s (linha %d)\n", s, yylineno);
